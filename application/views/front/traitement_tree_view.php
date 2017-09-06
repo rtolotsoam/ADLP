@@ -62,6 +62,7 @@ foreach ($lst_proc as $val_proc) {
                 </div>
                 <!-- END NBRE ETAPES PROCESSUS -->
 
+
                 <div class="widget">
 
 
@@ -80,6 +81,8 @@ if (isset($lst_proc) && isset($lst_act)) {
     foreach ($lst_proc as $val_proc) {
         $pr_act = $lst_act[$val_proc->fte_process_id];
         ?>
+
+
                       <div class="tab-pane" id="tab<?php echo $val_proc->fte_process_id; ?>">
                         <div class="row slim-scroll">
                           <div class="col-md-12 etape-contenu">
@@ -92,45 +95,99 @@ if (isset($lst_proc) && isset($lst_act)) {
                         <hr>
                         <div class="row">
                           <div class="col-md-12">
-                            <!--<ul>-->
-                            <?php
-if (!empty($pr_act)) {
-            foreach ($pr_act as $val_act) {
-                if ($val_act->process_redirect_id != "0") {
-                    ?>
-                            <!--<li>--><a href="#tab<?php echo $val_act->process_redirect_id; ?>" data-toggle="tab" class="btn btn-info pull-right action-btn" style="margin-top: 5px; margin-bottom: 5px;"  onclick="click_tab(<?php echo $val_act->process_redirect_id; ?>, <?php echo $val_act->fte_action_id; ?>)"   <?php if (!is_null($val_act->id_html)) {echo "id=\"" . $val_act->id_html . "\"";}?>><?php echo ascii_to_entities($val_act->libelle); ?></a><!--</li>-->
+                            
 
-                            <?php
-} else {
-                    ?>
-                            <a style="margin-top: 5px;margin-bottom: 5px;" href="<?php echo site_url('front/pont/terminer'); ?>" class="btn btn-info pull-right action-btn" <?php if (!is_null($val_act->id_html)) {echo "id=\"" . $val_act->id_html . "\"";}?>><?php echo ascii_to_entities($val_act->libelle); ?></a><!--</li>-->
 
-                            <?php
-}
-            }
-        }
-        ?>
-                            <!--</ul>-->
-                            <?php
+<?php
 if (isset($deb_proc)) {
             if ($deb_proc == $val_proc->fte_process_id) {
                 ?>
+                      <div class="col-lg-4">
+                      </div>
+                            <?php
+            } else {
+                ?>
+                        <div class="col-lg-4">
+                            <button style="margin-top: 5px;margin-bottom: 5px;" class="btn btn-primary pull-left" onclick="abhis()"><i class="fa fa-lg fa-arrow-left"></i> ACTION PRECEDENTE</button>
+                        </div>    
 
                             <?php
-} else {
-                ?>
-                            <button style="margin-top: 5px;margin-bottom: 5px;" class="btn btn-primary pull-left" onclick="abhis()"><i class="fa fa-lg fa-arrow-left"></i> ACTION PRECEDENTE</button>
-                            <?php
+
+            }
 }
+?>
+
+<?php
+if (!empty($pr_act)) {
+
+        if(count($pr_act) <= 2){
+?>  
+            <div class="col-lg-8">
+<?php            
+            foreach ($pr_act as $val_act) {
+                if ($val_act->process_redirect_id != "0") {
+                    ?>
+
+                        
+                            <a href="#tab<?php echo $val_act->process_redirect_id; ?>" data-toggle="tab" class="btn btn-info pull-right action-btn" style="margin-top: 5px; margin-bottom: 5px;"  onclick="click_tab(<?php echo $val_act->process_redirect_id; ?>, <?php echo $val_act->fte_action_id; ?>)"   <?php if (!is_null($val_act->id_html)) {echo "id=\"" . $val_act->id_html . "\"";}?>><?php echo ascii_to_entities($val_act->libelle); ?></a>
+
+                            <?php
+                } else {
+                    ?>  
+
+                        
+                            <a style="margin-top: 5px;margin-bottom: 5px;" href="<?php echo site_url('front/pont/terminer'); ?>" class="btn btn-info pull-right action-btn" <?php if (!is_null($val_act->id_html)) {echo "id=\"" . $val_act->id_html . "\"";}?>><?php echo ascii_to_entities($val_act->libelle); ?></a>
+                          
+
+                            <?php
+                }
+            }
+            ?>
+            </div>
+            <?php
+        }else{
+          ?>
+        <div class="col-lg-8">
+          <div class="btn-group dropup pull-right" style="z-index: 10000 !important;">
+              <button id="bouton_action" data-toggle="dropdown" class="btn btn-info dropdown-toggle bouton_action_<?php echo $val_proc->fte_process_id; ?>" type="button"> 
+              Action à faire&nbsp;
+                <span class="caret"></span>
+              </button>
+            <ul role="menu" class="dropdown-menu">  
+            <?php  
+                foreach ($pr_act as $val_act) {
+                  if ($val_act->process_redirect_id != "0") {
+                      ?>
+                        <li>
+                          <a href="#tab<?php echo $val_act->process_redirect_id; ?>" data-toggle="tab" onclick="click_tab(<?php echo $val_act->process_redirect_id; ?>, <?php echo $val_act->fte_action_id; ?>)"   <?php if (!is_null($val_act->id_html)) {echo "id=\"" . $val_act->id_html . "\"";}?>><?php echo ascii_to_entities($val_act->libelle); ?>
+                          </a>
+                        </li>
+                      <?php
+                  }else{
+                      ?>
+                        <li>
+                          <a href="<?php echo site_url('front/pont/terminer'); ?>"  <?php if (!is_null($val_act->id_html)) {echo "id=\"" . $val_act->id_html . "\"";}?>><?php echo ascii_to_entities($val_act->libelle); ?>
+                          </a>
+                        </li>
+                      <?php
+                  }
+                }
+            ?>
+            </ul>
+          </div>  
+        </div>
+
+          <?php
         }
-        ?>
+}
+?>
                           </div>
                         </div>
 
                       </div>
 
                       <?php
-}
+  }
 }
 ?>
 
@@ -161,4 +218,13 @@ if (isset($deb_proc)) {
   #sidebar > ul > li > ul.sub > li > a{
   display: inline-flex !important;
   }
+
   </style>
+  <script type="text/javascript">
+  $(function(){
+      setTimeout(function(){
+        //console.log('activer load');
+        $("#bouton_action").trigger('click');
+      }, 100);
+  });
+  </script>

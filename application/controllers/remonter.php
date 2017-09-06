@@ -31,12 +31,12 @@ class Remonter extends CI_Controller
         $ref_base = $this->rmnt->cpt_remonter($ref);
 
         if ($ref_base == 0) {
-            $ref = $ref_client . '_' . $ref_mat . '_' . $ref_date;
+            $ref = $ref_client . '_' . $ref_mat . '_' . $ref_date.'_Q1';
         } else {
 
             $version = (int) $ref_base + 1;
 
-            $ref = $ref_client . '_' . $ref_mat . '_' . $ref_date.'_V'.$version;
+            $ref = $ref_client . '_' . $ref_mat . '_' . $ref_date.'_Q'.$version;
         }
 
         $remonter = pg_escape_string($this->input->post('remonter'));
@@ -50,7 +50,7 @@ class Remonter extends CI_Controller
         $res = $this->rmnt->insert_remonter($data);
 
         if ($res) {
-            echo 'success';
+            echo $ref;
         } else {
             echo 'erreur';
         }

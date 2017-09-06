@@ -1,6 +1,13 @@
 function click_tab(tab, btn_id){
 	var tb =  "lien" + tab;
 
+	//console.log('click');
+
+	setTimeout(function(){
+        //console.log('activer');
+        $(".bouton_action_"+tab).trigger('click');
+    }, 100);
+
 	if (!(typeof(click_tab_supplement) =="undefined")) {
 			click_tab_supplement(tab, btn_id);
 	}
@@ -21,6 +28,7 @@ function his(itab) {
 }
 
 function abhis() {	
+
 
 	if ($('#fin_session_prcs49').hasClass('hidden')){
         fin_session_prcs49.classList.remove('hidden');
@@ -57,6 +65,12 @@ function abhis() {
 		,success : function (data) {
 			if (data.last_process>0) {
 				id_tab = "lien" + data.last_process;
+
+				setTimeout(function(){
+			        //console.log('activer prec');
+			        $(".bouton_action_"+data.last_process).trigger('click');
+			    }, 100);
+
 				try {
 					document.getElementById(id_tab).click();
 					abort_activity();
@@ -65,6 +79,12 @@ function abhis() {
 			}
 			else {
 				id_tab = "lien" + first_proc;
+
+				setTimeout(function(){
+			        //console.log('activer prec');
+			        $(".bouton_action_"+first_proc).trigger('click');
+			    }, 100);
+
 				try {
 					document.getElementById(id_tab).click();
 					abort_activity();

@@ -32,9 +32,9 @@
                   focus : true,
                   toolbar: [
                       // [groupName, [list of button]]
-                      ['style', ['bold', 'italic', 'underline', 'clear']],
-                      ['color', ['color']],
-                      ['para', ['paragraph']]
+                      //['style', ['bold', 'italic', 'underline', 'clear']],
+                      //['color', ['color']],
+                      //['para', ['paragraph']]
                     ]
               });
           });
@@ -57,9 +57,9 @@
 
                         console.log(data);
 
-                        if(data == 'success'){
+                        if(data != 'erreur'){
 
-                            $('#success_remonter').html('<div class="alert alert-success" align="center">Remonté ajouter avec succès !</div>');
+                            $('#success_remonter').html('<div class="alert alert-success" align="center">Remonté  portant la référence <br/><span style="color : red !important;">'+data+' </span><br/> ajouter avec succès !</div>');
 
 
                             setTimeout(function(){  
@@ -68,7 +68,7 @@
 
                               $('#remonter').code('');
 
-                            }, 2000);
+                            }, 3000);
 
 
                         }else{
