@@ -1,8 +1,8 @@
--- Table: public.fte_access_group
+-- Table: fte_access_group
 
--- DROP TABLE public.fte_access_group;
+-- DROP TABLE fte_access_group;
 
-CREATE TABLE public.fte_access_group
+CREATE TABLE fte_access_group
 (
   fte_group_id integer NOT NULL DEFAULT nextval(('public.fte_group_seq'::text)::regclass),
   libelle_group character varying,
@@ -12,15 +12,15 @@ CREATE TABLE public.fte_access_group
 WITH (
   OIDS=TRUE
 );
-ALTER TABLE public.fte_access_group
-  OWNER TO postgres;
+ALTER TABLE fte_access_group
+  OWNER TO pgtantely;
 
 
--- Table: public.fte_action
+-- Table: fte_action
 
--- DROP TABLE public.fte_action;
+-- DROP TABLE fte_action;
 
-CREATE TABLE public.fte_action
+CREATE TABLE fte_action
 (
   fte_action_id integer NOT NULL DEFAULT nextval(('public.fte_action_seq'::text)::regclass),
   libelle character varying,
@@ -30,26 +30,21 @@ CREATE TABLE public.fte_action
   traitement_id integer,
   id_html character varying,
   flag integer DEFAULT 1,
-  CONSTRAINT pk_fte_action PRIMARY KEY (fte_action_id),
-  CONSTRAINT fte_action_process_id_fkey FOREIGN KEY (process_id)
-      REFERENCES public.fte_process (fte_process_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT fte_action_traitement_id_fkey FOREIGN KEY (traitement_id)
-      REFERENCES public.fte_traitement (fte_traitement_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT pk_fte_action PRIMARY KEY (fte_action_id)
 )
 WITH (
   OIDS=TRUE
 );
-ALTER TABLE public.fte_action
-  OWNER TO postgres;
+ALTER TABLE fte_action
+  OWNER TO pgtantely;
+
 
   
--- Table: public.fte_categories
+-- Table: fte_categories
 
--- DROP TABLE public.fte_categories;
+-- DROP TABLE fte_categories;
 
-CREATE TABLE public.fte_categories
+CREATE TABLE fte_categories
 (
   fte_categories_id integer NOT NULL DEFAULT nextval(('public.fte_categories_seq'::text)::regclass),
   libelle_categories character varying,
@@ -61,96 +56,81 @@ CREATE TABLE public.fte_categories
   root_id integer,
   flag integer DEFAULT 1,
   id_group integer DEFAULT 0,
-  CONSTRAINT pk_fte_categories PRIMARY KEY (fte_categories_id),
-  CONSTRAINT fte_categories_id_group_fkey FOREIGN KEY (id_group)
-      REFERENCES public.fte_access_group (fte_group_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT fte_categories_traitement_id_fkey FOREIGN KEY (traitement_id)
-      REFERENCES public.fte_traitement (fte_traitement_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT pk_fte_categories PRIMARY KEY (fte_categories_id)
 )
 WITH (
   OIDS=TRUE
 );
-ALTER TABLE public.fte_categories
+ALTER TABLE fte_categories
   OWNER TO postgres;
 
   
--- Table: public.fte_historique
+-- Table: fte_historique
 
--- DROP TABLE public.fte_historique;
+-- DROP TABLE fte_historique;
 
-CREATE TABLE public.fte_historique
+CREATE TABLE fte_historique
 (
   fte_historique_id integer NOT NULL DEFAULT nextval(('public.fte_historique_seq'::text)::regclass),
   process_id integer NOT NULL,
   session_id character varying,
   heure timestamp without time zone NOT NULL DEFAULT (now())::timestamp without time zone,
-  flag integer DEFAULT '-1'::integer,
+  flag integer DEFAULT (-1),
   matricule integer,
-  CONSTRAINT pk_fte_historique PRIMARY KEY (fte_historique_id),
-  CONSTRAINT fte_historique_process_id_fkey FOREIGN KEY (process_id)
-      REFERENCES public.fte_process (fte_process_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT pk_fte_historique PRIMARY KEY (fte_historique_id)
 )
 WITH (
   OIDS=TRUE
 );
-ALTER TABLE public.fte_historique
-  OWNER TO postgres;
+ALTER TABLE fte_historique
+  OWNER TO pgtantely;
 
   
--- Table: public.fte_notification_maj
+-- Table: fte_notification_maj
 
--- DROP TABLE public.fte_notification_maj;
+-- DROP TABLE fte_notification_maj;
 
-CREATE TABLE public.fte_notification_maj
+CREATE TABLE fte_notification_maj
 (
-  fte_notification_maj_id integer NOT NULL DEFAULT nextval(('public.fte_notification_id_seq'::text)::regclass),
+  fte_notification_maj_id serial NOT NULL,
   titre character varying,
   corps character varying NOT NULL,
   couleur character varying,
   date_creation timestamp without time zone NOT NULL DEFAULT (now())::timestamp without time zone,
   active integer NOT NULL DEFAULT 1,
-  createur integer NOT NULL,
-  CONSTRAINT fte_notification_maj_pkey PRIMARY KEY (fte_notification_maj_id)
+  createur integer NOT NULL
 )
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public.fte_notification_maj
-  OWNER TO postgres;
-GRANT ALL ON TABLE public.fte_notification_maj TO postgres;
-GRANT ALL ON TABLE public.fte_notification_maj TO public;
+ALTER TABLE fte_notification_maj
+  OWNER TO pgtantely;
+GRANT ALL ON TABLE fte_notification_maj TO pgtantely;
+GRANT ALL ON TABLE fte_notification_maj TO public;
 
 
--- Table: public.fte_notification_maj_consulte
+-- Table: fte_notification_maj_consulte
 
--- DROP TABLE public.fte_notification_maj_consulte;
+-- DROP TABLE fte_notification_maj_consulte;
 
-CREATE TABLE public.fte_notification_maj_consulte
+CREATE TABLE fte_notification_maj_consulte
 (
-  id_notification integer NOT NULL,
+  fte_notification_maj_id integer NOT NULL,
   consulte integer NOT NULL,
-  date_consulte date NOT NULL DEFAULT now(),
-  fte_consulte_id integer NOT NULL DEFAULT nextval(('public.fte_consulte_seq'::text)::regclass),
-  CONSTRAINT fte_consulte_pkey PRIMARY KEY (fte_consulte_id),
-  CONSTRAINT fte_consulte_fkey FOREIGN KEY (id_notification)
-      REFERENCES public.fte_notification_maj (fte_notification_maj_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
+  date_consulte date NOT NULL DEFAULT now()
 )
 WITH (
   OIDS=TRUE
 );
-ALTER TABLE public.fte_notification_maj_consulte
-  OWNER TO postgres;
+ALTER TABLE fte_notification_maj_consulte
+  OWNER TO pgtantely;
 
   
--- Table: public.fte_process
+-- Table: fte_process
 
--- DROP TABLE public.fte_process;
+-- DROP TABLE fte_process;
 
-CREATE TABLE public.fte_process
+CREATE TABLE fte_process
 (
   fte_process_id integer NOT NULL DEFAULT nextval(('public.fte_process_seq'::text)::regclass),
   parent_id integer NOT NULL,
@@ -162,28 +142,23 @@ CREATE TABLE public.fte_process
   alias character varying,
   libelle character varying(254),
   flag integer DEFAULT 1,
-  CONSTRAINT pk_fte_process PRIMARY KEY (fte_process_id),
-  CONSTRAINT fte_process_campagne_id_fkey FOREIGN KEY (campagne_id)
-      REFERENCES public.fte_traitement (fte_traitement_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT fte_process_campagne_id_fkey1 FOREIGN KEY (campagne_id)
-      REFERENCES public.fte_traitement (fte_traitement_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT pk_fte_process PRIMARY KEY (fte_process_id)
 )
 WITH (
   OIDS=TRUE
 );
-ALTER TABLE public.fte_process
-  OWNER TO postgres;
-GRANT ALL ON TABLE public.fte_process TO postgres;
-GRANT ALL ON TABLE public.fte_process TO public;
+ALTER TABLE fte_process
+  OWNER TO pgtantely;
+GRANT ALL ON TABLE fte_process TO pgtantely;
+GRANT ALL ON TABLE fte_process TO public;
 
 
--- Table: public.fte_traitement
 
--- DROP TABLE public.fte_traitement;
+-- Table: fte_traitement
 
-CREATE TABLE public.fte_traitement
+-- DROP TABLE fte_traitement;
+
+CREATE TABLE fte_traitement
 (
   fte_traitement_id integer NOT NULL DEFAULT nextval(('public.fte_traitement_seq'::text)::regclass),
   info_traitement character varying,
@@ -196,37 +171,35 @@ CREATE TABLE public.fte_traitement
 WITH (
   OIDS=TRUE
 );
-ALTER TABLE public.fte_traitement
-  OWNER TO postgres;
+ALTER TABLE fte_traitement
+  OWNER TO pgtantely;
 
   
--- Table: public.fte_traitement_fonction
+-- Table: fte_traitement_fonction
 
--- DROP TABLE public.fte_traitement_fonction;
+-- DROP TABLE fte_traitement_fonction;
 
-CREATE TABLE public.fte_traitement_fonction
+CREATE TABLE fte_traitement_fonction
 (
   fte_traitement_fonction_id integer NOT NULL DEFAULT nextval(('public.fte_traitement_fonction_seq'::text)::regclass),
   text_js text,
   traitement_id integer,
-  CONSTRAINT pk_fte_traitement_fonction PRIMARY KEY (fte_traitement_fonction_id),
-  CONSTRAINT fte_traitement_fonction_traitement_id_fkey FOREIGN KEY (traitement_id)
-      REFERENCES public.fte_traitement (fte_traitement_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT pk_fte_traitement_fonction PRIMARY KEY (fte_traitement_fonction_id)
 )
 WITH (
   OIDS=TRUE
 );
-ALTER TABLE public.fte_traitement_fonction
-  OWNER TO postgres;
-GRANT ALL ON TABLE public.fte_traitement_fonction TO postgres;
+ALTER TABLE fte_traitement_fonction
+  OWNER TO pgtantely;
+GRANT ALL ON TABLE fte_traitement_fonction TO pgtantely;
 
 
--- Table: public.fte_user
 
--- DROP TABLE public.fte_user;
+-- Table: fte_user
 
-CREATE TABLE public.fte_user
+-- DROP TABLE fte_user;
+
+CREATE TABLE fte_user
 (
   fte_user_id integer NOT NULL DEFAULT nextval(('public.fte_user_seq'::text)::regclass),
   matricule integer NOT NULL,
@@ -240,18 +213,16 @@ CREATE TABLE public.fte_user
   gestion_process integer DEFAULT 0,
   gestion_user integer DEFAULT 0,
   id_group integer DEFAULT 0,
-  CONSTRAINT fte_user_id_pkey PRIMARY KEY (fte_user_id),
-  CONSTRAINT fte_user_id_group_fkey FOREIGN KEY (id_group)
-      REFERENCES public.fte_access_group (fte_group_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT fte_user_id_pkey PRIMARY KEY (fte_user_id)
 )
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public.fte_user
-  OWNER TO postgres;
-GRANT ALL ON TABLE public.fte_user TO postgres;
-GRANT ALL ON TABLE public.fte_user TO public;
+ALTER TABLE fte_user
+  OWNER TO pgtantely;
+GRANT ALL ON TABLE fte_user TO pgtantely;
+GRANT ALL ON TABLE fte_user TO public;
+
 
   
 -- View: vw_historique
