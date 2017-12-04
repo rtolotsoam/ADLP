@@ -28,10 +28,11 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'about' } ,		
 		'/',
 		{ name: 'fte' } ,
+		{ name: 'video' } ,
 	];
 
 
-	config.extraPlugins = 'ftedire,ftefaire,fteattention,ftediscours';
+	config.extraPlugins = 'ftedire,ftefaire,fteattention,ftediscours,video,pastefromexcel';
 	// config.extraPlugins = 'abbr';
 	
 	// Remove some buttons provided by the standard plugins, which are
@@ -43,6 +44,9 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// Simplify the dialog windows.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
+
+	config.pasteFromWordRemoveStyles = false;
+	config.pasteFromWordRemoveFontStyles = false;
 
 
 };
